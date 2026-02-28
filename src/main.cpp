@@ -6,39 +6,61 @@
  * @date YYYY-MM-DD
  *
  * @details
- * Reads analog brightness data from LDR sensor
- * and displays structured output via Serial Monitor.
+ * Reads analog brightness data from an LDR sensor and outputs structured
+ * information to the Serial Monitor.
  */
 
- // TODO 1:
- // Define LDR analog pin (Use A0)
+/**
+ * @brief Analog pin connected to the LDR voltage divider output.
+ */
+const uint8_t LDR_PIN = A0;
 
- // TODO 2:
- // Create variable to store sensor reading
+/**
+ * @brief ADC threshold used to decide Bright vs Dark.
+ *
+ * Values greater than or equal to this threshold are considered "Bright".
+ */
+const int BRIGHT_THRESHOLD = 600;
 
+/**
+ * @brief Stores the most recent raw ADC reading from the LDR.
+ */
+int ldrValue = 0;
+
+/**
+ * @brief Arduino setup function.
+ *
+ * Initializes serial communication at 9600 baud and prints an initialization
+ * message together with configuration values.
+ */
 void setup() {
-
-    // TODO 3:
-    // Initialize Serial communication (9600 baud rate)
-
-    // TODO 4:
-    // Print system initialization message
+    Serial.begin(9600);
+    while (!Serial) { /* wait for Serial to be ready on native USB boards */ }
+    Serial.println(F("LDR Light Data Acquisition System Initialized"));
+    Serial.print(F("Configured LDR pin: "));
+    Serial.println(LDR_PIN);
+    Serial.print(F("Bright threshold (ADC): "));
+    Serial.println(BRIGHT_THRESHOLD);
 }
 
+/**
+ * @brief Arduino main loop.
+ *
+ * Reads the analog value from the LDR, prints the raw ADC reading and a
+ * human-readable brightness status (Bright/Dark). Runs every 500 ms.
+ */
 void loop() {
+    ldrValue = analogRead(LDR_PIN);
 
-    // TODO 5:
-    // Read analog value from LDR
+    Serial.print(F("LDR ADC: "));
+    Serial.println(ldrValue);
 
-    // TODO 6:
-    // Print raw ADC value
+    if (ldrValue >= BRIGHT_THRESHOLD) {
+        Serial.println(F("Brightness: Bright"));
+    } else {
+        Serial.println(F("Brightness: Dark"));
+    }
 
-    // TODO 7:
-    // Apply threshold logic (Bright / Dark detection)
-
-    // TODO 8:
-    // Print brightness status
-
-    // TODO 9:
-    // Add delay (500ms or 1 second)
+    Serial.println();
+    delay(500);
 }
